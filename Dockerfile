@@ -10,10 +10,10 @@ COPY public ./public
 COPY src ./src
 COPY .git ./.git
 
-RUN export REACT_APP_VERSION=$(git describe --always)
-RUN export REACT_APP_DATE=$(date +"%Y-%m-%d %H:%M:%S")
 ARG REACT_APP_TCL_AUTH
-RUN yarn build
+RUN export REACT_APP_VERSION=$(git describe --always) && \
+    export REACT_APP_DATE=$(date +"%Y-%m-%d %H:%M:%S") && \
+    yarn build
 
 FROM nginx AS prod
 COPY --from=build /app/build /usr/share/nginx/html
