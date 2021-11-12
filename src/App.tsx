@@ -27,7 +27,7 @@ class App extends React.Component<{}, IAppState> {
 
     componentDidMount() {
         this.refresh();
-        this.timerId = setInterval(this.refresh.bind(this), 5000);
+        this.timerId = setInterval(this.refresh.bind(this), 60000);
     }
 
     componentWillUnmount() {
