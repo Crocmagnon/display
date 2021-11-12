@@ -1,26 +1,58 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Ligne from "./Ligne";
+import {ILigne} from "./interfaces";
+import {setInterval} from "timers";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+interface IAppState {
+    passages: ILigne[];
 }
+
+class App extends React.Component<{}, IAppState> {
+    timerId?: ReturnType<typeof setInterval>;
+
+    constructor(props: {}) {
+        super(props);
+        this.state = {passages: [{ligne: undefined, delais: [undefined]}]};
+        this.timerId = undefined;
+    }
+
+    render() {
+        return <div className="App">
+            {this.state.passages.map((ligne) => <Ligne key={ligne.ligne} ligne={ligne.ligne} delais={ligne.delais}/>)}
+            <button onClick={this.reload}>Refresh</button>
+        </div>;
+    }
+
+    componentDidMount() {
+        this.refresh();
+        this.timerId = setInterval(this.refresh.bind(this), 5000);
+    }
+
+    componentWillUnmount() {
+        if (this.timerId) {
+            clearInterval(this.timerId);
+        }
+    }
+
+    refresh() {
+        const headers = new Headers();
+        headers.set("Authorization", `Basic ${process.env.REACT_APP_TCL_AUTH}`);
+        http<IAppState>("https://tcl.augendre.info/stop/290", {method: "GET", headers: headers}).then(json => {
+            this.setState(json);
+        });
+    }
+
+    reload() {
+        window.location.reload();
+    }
+}
+
+async function http<T>(request: RequestInfo, init?: RequestInit): Promise<T> {
+    const response = await fetch(request, init);
+    return await response.json();
+}
+
 
 export default App;

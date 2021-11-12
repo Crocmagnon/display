@@ -1,0 +1,15 @@
+version: "2.4"
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        REACT_APP_TCL_AUTH: changeme
+    restart: always
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    external: true
