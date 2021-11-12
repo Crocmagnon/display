@@ -11,11 +11,17 @@ interface IAppState {
 
 class App extends React.Component<{}, IAppState> {
     timerId?: ReturnType<typeof setInterval>;
+    refreshSeconds: number;
 
     constructor(props: {}) {
         super(props);
         this.state = {passages: [{ligne: undefined, delais: [undefined]}]};
         this.timerId = undefined;
+        const urlParams = new URLSearchParams(window.location.search);
+        this.refreshSeconds = Number(urlParams.get("refreshSeconds"));
+        if (this.refreshSeconds <= 5) {
+            this.refreshSeconds = 60;
+        }
     }
 
     render() {
@@ -42,7 +48,7 @@ class App extends React.Component<{}, IAppState> {
 
     componentDidMount() {
         this.refresh();
-        this.timerId = setInterval(this.refresh.bind(this), 60000);
+        this.timerId = setInterval(this.refresh.bind(this), this.refreshSeconds * 1000);
     }
 
     componentWillUnmount() {
