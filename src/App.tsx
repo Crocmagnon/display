@@ -19,15 +19,24 @@ class App extends React.Component<{}, IAppState> {
     }
 
     render() {
-        return <div className="container">
-            <div className="row">
-                {this.state.passages.map((ligne) => <Ligne key={ligne.ligne} ligne={ligne.ligne} delais={ligne.delais}/>)}
-            </div>
-            <div className="row">
-                <div className="col-12">
-                    <button className="btn btn-block btn-secondary" onClick={this.reload}>Refresh</button>
+        return <div>
+            <div className="container main">
+                <div className="row">
+                    {this.state.passages.map((ligne) => <Ligne key={ligne.ligne} ligne={ligne.ligne}
+                                                               delais={ligne.delais}/>)}
+                </div>
+                <div className="row">
+                    <div className="col-12">
+                        <button className="btn btn-block btn-secondary" onClick={this.reload}>Refresh</button>
+                    </div>
                 </div>
             </div>
+
+            <footer>
+                <p className="container">
+                    {process.env.REACT_APP_VERSION} built on {process.env.REACT_APP_DATE}
+                </p>
+            </footer>
         </div>;
     }
 

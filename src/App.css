@@ -3,6 +3,10 @@ body {
     margin-top: 1em;
 }
 
+.main {
+    margin-bottom: 2rem;
+}
+
 .placeholder:empty:before {
     content: "\200b";
 }
@@ -11,4 +15,14 @@ body {
     display: inline-block;
     width: 50px;
     background-color: #c9c9c9;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1.5rem;
+    background-color: #e8e8e8;
+    font-size: 1rem;
 }
