@@ -7,6 +7,7 @@ import {setInterval} from "timers";
 
 interface IAppState {
     passages: ILigne[];
+    refreshDate?: string;
 }
 
 class App extends React.Component<{}, IAppState> {
@@ -15,13 +16,13 @@ class App extends React.Component<{}, IAppState> {
 
     constructor(props: {}) {
         super(props);
-        this.state = {passages: [{ligne: undefined, delais: [undefined]}]};
         this.timerId = undefined;
         const urlParams = new URLSearchParams(window.location.search);
         this.refreshSeconds = Number(urlParams.get("refreshSeconds"));
         if (this.refreshSeconds <= 5) {
             this.refreshSeconds = 60;
         }
+        this.state = {passages: [{ligne: undefined, delais: [undefined]}]};
     }
 
     render() {
@@ -40,7 +41,7 @@ class App extends React.Component<{}, IAppState> {
 
             <footer>
                 <p className="container">
-                    {process.env.REACT_APP_VERSION} built on {process.env.REACT_APP_DATE}
+                    {process.env.REACT_APP_VERSION} built on {process.env.REACT_APP_DATE}. Refreshed: {this.state.refreshDate}.
                 </p>
             </footer>
         </div>;
@@ -61,6 +62,7 @@ class App extends React.Component<{}, IAppState> {
         const headers = new Headers();
         headers.set("Authorization", `Basic ${process.env.REACT_APP_TCL_AUTH}`);
         http<IAppState>("https://tcl.augendre.info/stop/290", {method: "GET", headers: headers}).then(json => {
+            json.refreshDate = new Date().toLocaleString("fr-fr");
             this.setState(json);
         });
     }
