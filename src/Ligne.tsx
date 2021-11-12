@@ -1,11 +1,16 @@
 import React from "react";
 import {ILigne, PassageType} from "./interfaces";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faBus} from '@fortawesome/free-solid-svg-icons'
+
 
 export default class Ligne extends React.Component<ILigne> {
     render() {
-        return <div>
-            <p>Prochains passages de la ligne {placeholder(this.props.ligne)} :</p>
-            <Passages passages={this.props.delais}/>
+        return <div className="col-4">
+            <div className="card">
+                <div className="card-header"><FontAwesomeIcon icon={faBus}/> {placeholder(this.props.ligne)}</div>
+                <Passages passages={this.props.delais}/>
+            </div>
         </div>
     }
 }
@@ -16,7 +21,7 @@ interface IPassagesProps {
 
 class Passages extends React.Component<IPassagesProps> {
     render() {
-        return <ul>
+        return <ul className="list-group list-group-flush">
             {this.props.passages?.map((passage, index) => <Passage key={index} passage={passage}/>)}
         </ul>
     }
@@ -29,15 +34,14 @@ interface IPassageProps {
 
 class Passage extends React.Component<IPassageProps> {
     render() {
-        return <li>{placeholder(this.props.passage)}</li>
+        return <li className="list-group-item">{placeholder(this.props.passage)}</li>
     }
 }
 
 function placeholder(value?: string) {
     if (value === undefined) {
         return <span className="placeholder"/>
-    }
-    else {
+    } else {
         return value;
     }
 }
