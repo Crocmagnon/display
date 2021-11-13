@@ -2,16 +2,19 @@ import React from "react";
 import {ILigne, PassageType} from "./interfaces";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faBus} from '@fortawesome/free-solid-svg-icons'
+import {Card, Col, ListGroup} from "react-bootstrap";
 
 
 export default class Ligne extends React.Component<ILigne> {
     render() {
-        return <div className="col-4">
-            <div className="card">
-                <div className="card-header"><FontAwesomeIcon icon={faBus}/> {placeholder(this.props.ligne)}</div>
+        return <Col>
+            <Card>
+                <Card.Header>
+                    <FontAwesomeIcon icon={faBus}/> {placeholder(this.props.ligne)}
+                </Card.Header>
                 <Passages passages={this.props.delais}/>
-            </div>
-        </div>
+            </Card>
+        </Col>
     }
 }
 
@@ -21,9 +24,9 @@ interface IPassagesProps {
 
 class Passages extends React.Component<IPassagesProps> {
     render() {
-        return <ul className="list-group list-group-flush">
+        return <ListGroup variant="flush">
             {this.props.passages?.map((passage, index) => <Passage key={index} passage={passage}/>)}
-        </ul>
+        </ListGroup>
     }
 }
 
@@ -34,7 +37,7 @@ interface IPassageProps {
 
 class Passage extends React.Component<IPassageProps> {
     render() {
-        return <li className="list-group-item">{placeholder(this.props.passage)}</li>
+        return <ListGroup.Item>{placeholder(this.props.passage)}</ListGroup.Item>
     }
 }
 
