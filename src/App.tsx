@@ -29,7 +29,7 @@ class App extends React.Component<{}, IAppState> {
     render() {
         return <div>
             <Container className="main">
-                <Row md={3}>
+                <Row md={4}>
                     {this.state.passages.map((ligne) => <Ligne key={ligne.ligne} ligne={ligne.ligne}
                                                                delais={ligne.delais}/>)}
                 </Row>
