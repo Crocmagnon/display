@@ -1,11 +1,17 @@
 import React from "react";
-import {ILigne, PassageType} from "./interfaces";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faBus} from '@fortawesome/free-solid-svg-icons'
 import {Card, Col, ListGroup} from "react-bootstrap";
+import {placeholder} from "./utils";
 
+export type PassageType = string | undefined;
 
-export default class Ligne extends React.Component<ILigne> {
+export interface ILigne {
+    ligne?: string;
+    delais: PassageType[];
+}
+
+export default class Tcl extends React.Component<ILigne> {
     render() {
         return <Col>
             <Card>
@@ -38,13 +44,5 @@ interface IPassageProps {
 class Passage extends React.Component<IPassageProps> {
     render() {
         return <ListGroup.Item>{placeholder(this.props.passage)}</ListGroup.Item>
-    }
-}
-
-function placeholder(value?: string) {
-    if (value === undefined) {
-        return <span className="placeholder"/>
-    } else {
-        return value;
     }
 }
