@@ -10,7 +10,7 @@ export default class Velov extends React.Component<IVelovStation> {
         return <Col>
             <Card>
                 <Card.Header>
-                    <FontAwesomeIcon icon={faBiking}/> {this.props.info.name.toLowerCase()}
+                    <FontAwesomeIcon icon={faBiking}/> {this.props.info.name.toLowerCase().split(" - ")[1]}
                 </Card.Header>
                 <ListGroup variant="flush">
                     <ListGroup.Item>

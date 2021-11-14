@@ -40,11 +40,9 @@ class App extends React.Component<{}, IAppState> {
     render() {
         return <div>
             <Container className="main">
-                <Row sm={2}>
+                <Row sm={2} md={3} className="g-4">
                     {this.state.passages.map((ligne) => <Tcl key={ligne.ligne} ligne={ligne.ligne}
                                                              delais={ligne.delais}/>)}
-                </Row>
-                <Row sm={2}>
                     {this.state.stations.map((station) => <Velov key={station.info.station_id} info={station.info} status={station.status}/>)}
                 </Row>
                 <Row>
