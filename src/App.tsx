@@ -97,48 +97,70 @@ class App extends React.Component<{}, IAppState> {
         const velovInfoPromise = http<IStationsInfoWrapper>("https://transport.data.gouv.fr/gbfs/lyon/station_information.json", {method: "GET"});
         const velovStatusPromise = http<IStationsStatusWrapper>("https://transport.data.gouv.fr/gbfs/lyon/station_status.json", {method: "GET"});
         Promise.all([tclPromise, velovInfoPromise, velovStatusPromise]).then(values => {
-            const tcl = values[0];
-            const velovInfo = values[1];
+            let tcl = values[0];
+            let velovInfo = values[1];
+            let velovStatus = values[2];
+            let tclResult: ITclFilteredApi|undefined;
             const stationsInfo: Record<string, IStationInfo> = {};
-            for (const stationInfo of velovInfo.data.stations) {
-                if (this.monitoredVelovStationIds.includes(stationInfo.station_id)) {
-                    stationsInfo[stationInfo.station_id] = stationInfo;
-                }
+            if (isError(tcl)) {
+                console.error(tcl);
+                tclResult = undefined;
             }
-            const velovStatus = values[2];
-            const stationsDict = new Map<string, IVelovStation>();
-            for (const stationStatus of velovStatus.data.stations) {
-                if (this.monitoredVelovStationIds.includes(stationStatus.station_id)) {
-                    const velovStation: IVelovStation = {
-                        status: stationStatus,
-                        info: stationsInfo[stationStatus.station_id]
-                    };
-                    stationsDict.set(velovStation.info.station_id, velovStation);
-                }
+            else {
+                tclResult = tcl;
             }
+
             const stations: IVelovStation[] = [];
-            for (const monitoredVelovStationId of this.monitoredVelovStationIds) {
-                const stationInfo = stationsDict.get(monitoredVelovStationId);
-                if (stationInfo) {
-                    stations.push(stationInfo);
+            if (isError(velovInfo) || isError(velovStatus)) {
+                console.error(velovInfo);
+                console.error(velovStatus);
+            } else {
+                velovInfo = velovInfo as IStationsInfoWrapper;
+                for (const stationInfo of velovInfo.data.stations) {
+                    if (this.monitoredVelovStationIds.includes(stationInfo.station_id)) {
+                        stationsInfo[stationInfo.station_id] = stationInfo;
+                    }
+                }
+
+                velovStatus = velovStatus as IStationsStatusWrapper;
+                const stationsDict = new Map<string, IVelovStation>();
+                for (const stationStatus of velovStatus.data.stations) {
+                    if (this.monitoredVelovStationIds.includes(stationStatus.station_id)) {
+                        const velovStation: IVelovStation = {
+                            status: stationStatus,
+                            info: stationsInfo[stationStatus.station_id]
+                        };
+                        stationsDict.set(velovStation.info.station_id, velovStation);
+                    }
+                }
+                for (const monitoredVelovStationId of this.monitoredVelovStationIds) {
+                    const stationInfo = stationsDict.get(monitoredVelovStationId);
+                    if (stationInfo) {
+                        stations.push(stationInfo);
+                    }
                 }
             }
+
             this.setState({
                 refreshDate: new Date().toLocaleString("fr-fr"),
-                tcl: tcl,
+                tcl: tclResult,
                 stations: stations,
             });
         })
     }
-
-    private reload = () => {
-        window.location.reload();
-    }
 }
 
-async function http<T>(request: RequestInfo, init?: RequestInit): Promise<T> {
+interface ErrorResponse {
+    detail: string;
+}
+
+async function http<T>(request: RequestInfo, init?: RequestInit): Promise<T|ErrorResponse> {
     const response = await fetch(request, init);
     return await response.json();
+}
+
+function isError(response: any): response is ErrorResponse {
+    return response.detail !== undefined;
 }
 
 
