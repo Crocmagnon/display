@@ -7,16 +7,6 @@ body {
     margin-bottom: 2rem;
 }
 
-.placeholder:empty:before {
-    content: "\200b";
-}
-
-.placeholder {
-    display: inline-block;
-    width: 50px;
-    background-color: #c9c9c9;
-}
-
 footer {
     position: fixed;
     bottom: 0;

@@ -1,14 +1,20 @@
 import React from "react";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faBus} from '@fortawesome/free-solid-svg-icons'
+import {faBus, faDirections} from '@fortawesome/free-solid-svg-icons'
+import {faClock} from '@fortawesome/free-regular-svg-icons'
 import {Card, Col, ListGroup} from "react-bootstrap";
-import {placeholder} from "./utils";
 
 export type PassageType = string | undefined;
 
+export interface IStop {
+    id: number;
+    name: string;
+}
+
 export interface ILigne {
-    ligne?: string;
+    ligne: string;
     delais: PassageType[];
+    destination: IStop;
 }
 
 export default class Tcl extends React.Component<ILigne> {
@@ -16,33 +22,17 @@ export default class Tcl extends React.Component<ILigne> {
         return <Col>
             <Card>
                 <Card.Header>
-                    <FontAwesomeIcon icon={faBus}/> {placeholder(this.props.ligne)}
+                    <FontAwesomeIcon icon={faBus}/> {this.props.ligne}
                 </Card.Header>
-                <Passages passages={this.props.delais}/>
+                <ListGroup variant="flush">
+                    <ListGroup.Item>
+                        <FontAwesomeIcon icon={faDirections}/> {this.props.destination.name}
+                    </ListGroup.Item>
+                    {this.props.delais.map((passage, index) => <ListGroup.Item key={index}>
+                        <FontAwesomeIcon icon={faClock}/> {passage}
+                    </ListGroup.Item>)}
+                </ListGroup>
             </Card>
         </Col>
-    }
-}
-
-interface IPassagesProps {
-    passages: PassageType[];
-}
-
-class Passages extends React.Component<IPassagesProps> {
-    render() {
-        return <ListGroup variant="flush">
-            {this.props.passages?.map((passage, index) => <Passage key={index} passage={passage}/>)}
-        </ListGroup>
-    }
-}
-
-
-interface IPassageProps {
-    passage: PassageType;
-}
-
-class Passage extends React.Component<IPassageProps> {
-    render() {
-        return <ListGroup.Item>{placeholder(this.props.passage)}</ListGroup.Item>
     }
 }

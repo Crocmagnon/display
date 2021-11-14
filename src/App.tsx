@@ -1,18 +1,19 @@
 import React from 'react';
 import './App.css';
-import Tcl, {ILigne} from "./Tcl";
+import Tcl, {ILigne, IStop} from "./Tcl";
 import {clearInterval, setInterval} from "timers";
-import {Col, Container, Dropdown, DropdownButton, Row} from "react-bootstrap";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import {IStationInfo, IStationsInfoWrapper, IStationsStatusWrapper, IVelovStation} from "./IVelov";
 import Velov from "./Velov";
 
 
 interface ITclFilteredApi {
     passages: ILigne[];
+    stop: IStop;
 }
 
 interface IAppState {
-    passages: ILigne[];
+    tcl?: ITclFilteredApi;
     refreshDate?: string;
     stations: IVelovStation[];
 }
@@ -21,6 +22,7 @@ class App extends React.Component<{}, IAppState> {
     timerId?: ReturnType<typeof setInterval>;
     refreshSeconds: number;
     monitoredVelovStationIds: string[] = [];
+    monitoredTclStopId: string;
 
     constructor(props: {}) {
         super(props);
@@ -31,26 +33,23 @@ class App extends React.Component<{}, IAppState> {
         if (velovStationIds) {
             this.monitoredVelovStationIds = velovStationIds.split(";");
         }
+        this.monitoredTclStopId = urlParams.get("tclStopId") || "290";
         if (this.refreshSeconds <= 5) {
             this.refreshSeconds = 60;
         }
-        this.state = {passages: [{ligne: undefined, delais: [undefined]}], stations: []};
+        this.state = {stations: []};
     }
 
     render() {
         return <div>
             <Container className="main">
                 <Row sm={2} md={3} className="g-4">
-                    {this.state.passages.map((ligne) => <Tcl key={ligne.ligne} ligne={ligne.ligne}
-                                                             delais={ligne.delais}/>)}
-                    {this.state.stations.map((station) => <Velov key={station.info.station_id} info={station.info} status={station.status}/>)}
+                    {this.state.tcl?.passages.map((ligne) => <Tcl key={ligne.ligne} {...ligne}/>)}
+                    {this.state.stations.map((station) => <Velov key={station.info.station_id} {...station}/>)}
                 </Row>
                 <Row>
                     <Col>
-                        <DropdownButton variant="secondary" size="lg" title="Refresh">
-                            <Dropdown.Item onClick={this.refreshData}>Data</Dropdown.Item>
-                            <Dropdown.Item onClick={this.reload}>Full page</Dropdown.Item>
-                        </DropdownButton>
+                        <Button variant="secondary" size="lg" onClick={this.refreshData}>Refresh</Button>
                     </Col>
                 </Row>
             </Container>
@@ -91,7 +90,7 @@ class App extends React.Component<{}, IAppState> {
     private refresh() {
         const headers = new Headers();
         headers.set("Authorization", `Basic ${process.env.REACT_APP_TCL_AUTH}`);
-        const tclPromise = http<ITclFilteredApi>("https://tcl.augendre.info/stop/290", {
+        const tclPromise = http<ITclFilteredApi>(`https://tcl.augendre.info/stop/${this.monitoredTclStopId}`, {
             method: "GET",
             headers: headers
         });
@@ -126,7 +125,7 @@ class App extends React.Component<{}, IAppState> {
             }
             this.setState({
                 refreshDate: new Date().toLocaleString("fr-fr"),
-                passages: tcl.passages,
+                tcl: tcl,
                 stations: stations,
             });
         })
