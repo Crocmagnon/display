@@ -94,8 +94,8 @@ class App extends React.Component<{}, IAppState> {
             method: "GET",
             headers: headers
         });
-        const velovInfoPromise = http<IStationsInfoWrapper>("https://transport.data.gouv.fr/gbfs/lyon/station_information.json", {method: "GET"});
-        const velovStatusPromise = http<IStationsStatusWrapper>("https://transport.data.gouv.fr/gbfs/lyon/station_status.json", {method: "GET"});
+        const velovInfoPromise = http<IStationsInfoWrapper>("https://download.data.grandlyon.com/files/rdata/jcd_jcdecaux.jcdvelov/station_information.json", {method: "GET"});
+        const velovStatusPromise = http<IStationsStatusWrapper>("https://download.data.grandlyon.com/files/rdata/jcd_jcdecaux.jcdvelov/station_status.json", {method: "GET"});
         Promise.all([tclPromise, velovInfoPromise, velovStatusPromise]).then(values => {
             let tcl = values[0];
             let velovInfo = values[1];
