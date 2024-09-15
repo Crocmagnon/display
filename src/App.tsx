@@ -90,7 +90,7 @@ class App extends React.Component<{}, IAppState> {
     private refresh() {
         const headers = new Headers();
         headers.set("Authorization", `Basic ${process.env.REACT_APP_TCL_AUTH}`);
-        const tclPromise = http<ITclFilteredApi>(`https://tcl.augendre.info/stop/${this.monitoredTclStopId}`, {
+        const tclPromise = http<ITclFilteredApi>(`https://tcl.augendre.info/tcl/stop/${this.monitoredTclStopId}`, {
             method: "GET",
             headers: headers
         });
