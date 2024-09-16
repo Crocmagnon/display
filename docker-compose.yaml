@@ -2,8 +2,6 @@ services:
   app:
     build:
       context: .
-      args:
-        REACT_APP_TCL_AUTH: changeme
     restart: always
     networks:
       - frontend

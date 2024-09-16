@@ -10,7 +10,6 @@ COPY public ./public
 COPY src ./src
 COPY .git ./.git
 
-ARG REACT_APP_TCL_AUTH
 RUN export REACT_APP_VERSION=$(git describe --always) && \
     export REACT_APP_DATE=$(date +"%Y-%m-%d %H:%M:%S") && \
     yarn build
